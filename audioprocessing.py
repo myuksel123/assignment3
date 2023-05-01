@@ -1,6 +1,8 @@
 import pandas as panda;
 import random;
 import librosa;
+import numpy as np
+import matplotlib.pyplot as plot
 #from scipy.io import wavefile;
 from pathlib import Path;
 
@@ -52,9 +54,43 @@ for angryAudio in pathToAngry.glob("*.wav"):
     else:
         angryNamesTrain.append(str(angryAudio))
 
-#Exploratory Data Analysis
 
-#Using librosa
-sad, sad2 = librosa.load(sadNamesTest[0])
-print(type(sad))
-print(type(sad2))
+#put features and their respective moods in a dataframe
+
+extracted_Train =[]
+
+#putting sad files
+for sadA in sadNamesTrain:
+    sad, sadsr = librosa.load(sadA)
+    mfccs = librosa.feature.mfcc(y=sad, sr=sadsr, n_mfcc=40)
+    mfccs_scaled = np.mean(mfccs.T,axis=0)
+    extracted_Train.append([mfccs_scaled, "sad"])
+
+#putting happy files into train 
+for audio in happyNamesTrain:
+    featuresA, srA = librosa.load(audio)
+    mfccs = librosa.feature.mfcc(y=featuresA, sr=srA, n_mfcc=40)
+    mfccs_scaled = np.mean(mfccs.T,axis=0)
+    extracted_Train.append([mfccs_scaled, "happy"])
+
+#putting fear audio files
+for audio in fearNamesTrain:
+    featuresA, srA = librosa.load(audio)
+    mfccs = librosa.feature.mfcc(y=featuresA, sr=srA, n_mfcc=40)
+    mfccs_scaled = np.mean(mfccs.T,axis=0)
+    extracted_Train.append([mfccs_scaled, "fear"])
+
+#putting angry audio files
+for audio in fearNamesTrain:
+    featuresA, srA = librosa.load(audio)
+    mfccs = librosa.feature.mfcc(y=featuresA, sr=srA, n_mfcc=40)
+    mfccs_scaled = np.mean(mfccs.T,axis=0)
+    extracted_Train.append([mfccs_scaled, "angry"])
+
+
+trainingDF = panda.DataFrame(extracted_Train, columns = ["features", "mood"])
+print(trainingDF.head())
+
+#X will be the features, y will be their categorical mood
+trainX = np.array(trainingDF['features'].tolist())
+trainY = np.array(trainingDF['mood'].tolist())
