@@ -148,15 +148,16 @@ testY = to_categorical(LabelEncoder().fit_transform(testY))
 
 #Creating the model, based on a tutorial I found on creating models with keras models
 audioModel = Sequential()
-audioModel.add(Dense(100,input_shape=(40,)))
+#the more dense it is, the better the model has been seeming to perform
+audioModel.add(Dense(400,input_shape=(40,)))
 audioModel.add(Activation('relu'))
 audioModel.add(Dropout(0.5))
 
-audioModel.add(Dense(200))
+audioModel.add(Dense(500))
 audioModel.add(Activation('relu'))
 audioModel.add(Dropout(0.5))
 
-audioModel.add(Dense(100))
+audioModel.add(Dense(400))
 audioModel.add(Activation('relu'))
 audioModel.add(Dropout(0.5))
 
@@ -173,3 +174,4 @@ audioModel.fit(trainX, trainY, batch_size=32, epochs=10, validation_data=(testX,
 accuracy = audioModel.evaluate(testX, testY, verbose = 0)
 
 print("The accuracy of the model is "+ str(accuracy[1]*100) + "%")
+
